@@ -392,12 +392,13 @@ func (object Object) QemuParams(config *Config) []string {
 		objectParams = append(objectParams, fmt.Sprintf("cbitpos=%d", object.CBitPos))
 		objectParams = append(objectParams, fmt.Sprintf("reduced-phys-bits=%d", object.ReducedPhysBits))
 		objectParams = append(objectParams, "kernel-hashes=on")
-		if object.SnpCertsPath != "" {
-			objectParams = append(objectParams, fmt.Sprintf("certs-path=%s", object.SnpCertsPath))
-		}
+		// if object.SnpCertsPath != "" {
+		// 	objectParams = append(objectParams, fmt.Sprintf("certs-path=%s", object.SnpCertsPath))
+		// }
 
-		driveParams = append(driveParams, "if=pflash,format=raw,readonly=on")
-		driveParams = append(driveParams, fmt.Sprintf("file=%s", object.File))
+		// driveParams = append(driveParams, "if=pflash,format=raw,readonly=on")
+		// driveParams = append(driveParams, fmt.Sprintf("file=%s", object.File))
+		config.Bios = object.File
 	case SecExecGuest:
 		objectParams = append(objectParams, string(object.Type))
 		objectParams = append(objectParams, fmt.Sprintf("id=%s", object.ID))
@@ -601,6 +602,8 @@ func (fsdev FSDevice) QemuParams(config *Config) []string {
 	deviceParams = append(deviceParams, fmt.Sprintf("mount_tag=%s", fsdev.MountTag))
 	if fsdev.Transport.isVirtioPCI(config) && fsdev.ROMFile != "" {
 		deviceParams = append(deviceParams, fmt.Sprintf("romfile=%s", fsdev.ROMFile))
+	} else {
+		deviceParams = append(deviceParams, fmt.Sprintf("romfile="))
 	}
 	if fsdev.Transport.isVirtioCCW(config) {
 		if config.Knobs.IOMMUPlatform {
@@ -1012,6 +1015,8 @@ func (netdev NetDevice) QemuDeviceParams(config *Config) []string {
 
 	if netdev.Transport.isVirtioPCI(config) && netdev.ROMFile != "" {
 		deviceParams = append(deviceParams, fmt.Sprintf("romfile=%s", netdev.ROMFile))
+	} else {
+		deviceParams = append(deviceParams, fmt.Sprintf("romfile="))
 	}
 
 	if netdev.Transport.isVirtioCCW(config) {
@@ -1185,7 +1190,10 @@ func (dev SerialDevice) QemuParams(config *Config) []string {
 		deviceParams = append(deviceParams, fmt.Sprintf("romfile=%s", dev.ROMFile))
 		if dev.Driver == VirtioSerial && dev.MaxPorts != 0 {
 			deviceParams = append(deviceParams, fmt.Sprintf("max_ports=%d", dev.MaxPorts))
+		} else {
+			deviceParams = append(deviceParams, fmt.Sprintf("romfile="))
 		}
+
 	}
 
 	if dev.Transport.isVirtioCCW(config) {
@@ -1314,6 +1322,8 @@ func (blkdev BlockDevice) QemuParams(config *Config) []string {
 
 	if blkdev.Transport.isVirtioPCI(config) && blkdev.ROMFile != "" {
 		deviceParams = append(deviceParams, fmt.Sprintf("romfile=%s", blkdev.ROMFile))
+	} else {
+		deviceParams = append(deviceParams, fmt.Sprintf("romfile="))
 	}
 
 	if blkdev.Transport.isVirtioCCW(config) {
@@ -1517,6 +1527,8 @@ func (vhostuserDev VhostUserDevice) QemuNetParams(config *Config) []string {
 
 	if vhostuserDev.Transport.isVirtioPCI(config) && vhostuserDev.ROMFile != "" {
 		deviceParams = append(deviceParams, fmt.Sprintf("romfile=%s", vhostuserDev.ROMFile))
+	} else {
+		deviceParams = append(deviceParams, fmt.Sprintf("romfile="))
 	}
 
 	qemuParams = append(qemuParams, "-netdev")
@@ -1543,6 +1555,8 @@ func (vhostuserDev VhostUserDevice) QemuSCSIParams(config *Config) []string {
 
 	if vhostuserDev.Transport.isVirtioPCI(config) && vhostuserDev.ROMFile != "" {
 		deviceParams = append(deviceParams, fmt.Sprintf("romfile=%s", vhostuserDev.ROMFile))
+	} else {
+		deviceParams = append(deviceParams, fmt.Sprintf("romfile="))
 	}
 
 	qemuParams = append(qemuParams, "-device")
@@ -1568,6 +1582,8 @@ func (vhostuserDev VhostUserDevice) QemuBlkParams(config *Config) []string {
 
 	if vhostuserDev.Transport.isVirtioPCI(config) && vhostuserDev.ROMFile != "" {
 		deviceParams = append(deviceParams, fmt.Sprintf("romfile=%s", vhostuserDev.ROMFile))
+	} else {
+		deviceParams = append(deviceParams, fmt.Sprintf("romfile="))
 	}
 
 	qemuParams = append(qemuParams, "-device")
@@ -1605,6 +1621,8 @@ func (vhostuserDev VhostUserDevice) QemuFSParams(config *Config) []string {
 	}
 	if vhostuserDev.Transport.isVirtioPCI(config) && vhostuserDev.ROMFile != "" {
 		deviceParams = append(deviceParams, fmt.Sprintf("romfile=%s", vhostuserDev.ROMFile))
+	} else {
+		deviceParams = append(deviceParams, fmt.Sprintf("romfile="))
 	}
 
 	qemuParams = append(qemuParams, "-device")
@@ -1748,6 +1766,8 @@ func (b PCIeRootPortDevice) QemuParams(config *Config) []string {
 
 	if b.Transport.isVirtioPCI(config) && b.ROMFile != "" {
 		deviceParams = append(deviceParams, fmt.Sprintf("romfile=%s", b.ROMFile))
+	} else {
+		deviceParams = append(deviceParams, fmt.Sprintf("romfile="))
 	}
 
 	qemuParams = append(qemuParams, "-device")
@@ -1935,7 +1955,10 @@ func (vfioDev VFIODevice) QemuParams(config *Config) []string {
 		}
 		if vfioDev.ROMFile != "" {
 			deviceParams = append(deviceParams, fmt.Sprintf("romfile=%s", vfioDev.ROMFile))
+		} else {
+			deviceParams = append(deviceParams, fmt.Sprintf("romfile="))
 		}
+
 	}
 
 	if vfioDev.Bus != "" {
@@ -2023,6 +2046,8 @@ func (scsiCon SCSIController) QemuParams(config *Config) []string {
 	}
 	if scsiCon.Transport.isVirtioPCI(config) && scsiCon.ROMFile != "" {
 		deviceParams = append(deviceParams, fmt.Sprintf("romfile=%s", scsiCon.ROMFile))
+	} else {
+		deviceParams = append(deviceParams, fmt.Sprintf("romfile="))
 	}
 
 	if scsiCon.Transport.isVirtioCCW(config) {
@@ -2139,6 +2164,8 @@ func (bridgeDev BridgeDevice) QemuParams(config *Config) []string {
 	var transport VirtioTransport
 	if transport.isVirtioPCI(config) && bridgeDev.ROMFile != "" {
 		deviceParams = append(deviceParams, fmt.Sprintf("romfile=%s", bridgeDev.ROMFile))
+	} else {
+		deviceParams = append(deviceParams, fmt.Sprintf("romfile="))
 	}
 
 	if bridgeDev.IOReserve != "" {
@@ -2229,6 +2256,8 @@ func (vsock VSOCKDevice) QemuParams(config *Config) []string {
 
 	if vsock.Transport.isVirtioPCI(config) && vsock.ROMFile != "" {
 		deviceParams = append(deviceParams, fmt.Sprintf("romfile=%s", vsock.ROMFile))
+	} else {
+		deviceParams = append(deviceParams, fmt.Sprintf("romfile="))
 	}
 
 	if vsock.Transport.isVirtioCCW(config) {
@@ -2303,6 +2332,8 @@ func (v RngDevice) QemuParams(config *Config) []string {
 
 	if v.Transport.isVirtioPCI(config) && v.ROMFile != "" {
 		deviceParams = append(deviceParams, fmt.Sprintf("romfile=%s", v.ROMFile))
+	} else {
+		deviceParams = append(deviceParams, fmt.Sprintf("romfile="))
 	}
 
 	if v.Transport.isVirtioCCW(config) {
@@ -2381,6 +2412,8 @@ func (b BalloonDevice) QemuParams(config *Config) []string {
 
 	if b.Transport.isVirtioPCI(config) && b.ROMFile != "" {
 		deviceParams = append(deviceParams, fmt.Sprintf("romfile=%s", b.ROMFile))
+	} else {
+		deviceParams = append(deviceParams, fmt.Sprintf("romfile="))
 	}
 
 	if b.Transport.isVirtioCCW(config) {
@@ -3090,6 +3123,7 @@ func (config *Config) appendMemoryKnobs() {
 		numaMemParam = "node,memdev=" + dimmName
 	} else {
 		objMemParam = "memory-backend-ram,id=" + dimmName + ",size=" + config.Memory.Size
+		//objMemParam = "memory-backend-memfd,id=" + dimmName + ",size=" + config.Memory.Size
 		numaMemParam = "node,memdev=" + dimmName
 	}
 
