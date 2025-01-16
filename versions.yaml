@@ -99,11 +99,6 @@ assets:
         https://github.com/qemu/qemu/tags
         .*/v?(\d\S+)\.tar\.gz
 
-    qemu-snp-experimental:
-      description: "QEMU with SNP support"
-      url: "https://github.com/confidential-containers/qemu.git"
-      tag: "amd-snp-202402240000"
-
     stratovirt:
       description: "StratoVirt is an lightweight opensource VMM"
       url: "https://github.com/openeuler-mirror/stratovirt"
@@ -347,7 +342,7 @@ externals:
       package_output_dir: "OvmfX64"
     sev:
       description: "AmdSev build needed for SEV measured direct boot."
-      version: "edk2-stable202402"
+      version: "edk2-stable202411"
       package: "OvmfPkg/AmdSev/AmdSevX64.dsc"
       package_output_dir: "AmdSev"
 

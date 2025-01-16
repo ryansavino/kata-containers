@@ -28,7 +28,6 @@ BASE_TARBALLS = serial-targets \
 	nydus-tarball \
 	ovmf-sev-tarball \
 	ovmf-tarball \
-	qemu-snp-experimental-tarball \
 	qemu-tarball \
 	stratovirt-tarball \
 	shim-v2-tarball \
@@ -141,9 +140,6 @@ ovmf-sev-tarball:
 	${MAKE} $@-build
 
 ovmf-tarball:
-	${MAKE} $@-build
-
-qemu-snp-experimental-tarball:
 	${MAKE} $@-build
 
 qemu-tarball:

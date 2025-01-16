@@ -52,7 +52,6 @@ jobs:
           - ovmf-sev
           - pause-image
           - qemu
-          - qemu-snp-experimental
           - stratovirt
           - trace-forwarder
           - virtiofsd

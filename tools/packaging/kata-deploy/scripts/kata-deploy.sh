@@ -322,11 +322,6 @@ function adjust_qemu_cmdline() {
 	config_path="${2}"
 	qemu_share="${shim}"
 
-	# The paths on the kata-containers tarball side look like:
-	# ${dest_dir}/opt/kata/share/kata-qemu/qemu
-	# ${dest_dir}/opt/kata/share/kata-qemu-snp-experimnental/qemu
-	[[ "${shim}" =~ ^(qemu-snp|qemu-nvidia-snp)$ ]] && qemu_share=${shim}-experimental
-
 	# Both qemu and qemu-coco-dev use exactly the same QEMU, so we can adjust
 	# the shim on the qemu-coco-dev case to qemu
 	[[ "${shim}" =~ ^(qemu|qemu-coco-dev)$ ]] && qemu_share="qemu"
